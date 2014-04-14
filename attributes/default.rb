@@ -21,6 +21,10 @@ default['owncloud']['max_upload_size'] = '512M'
 default['owncloud']['sendfile'] = node['virtualization']['system'].eql?('vbox') ? false : true
 
 default['owncloud']['ssl'] = true
+# You need to put the full path for ssl_cert_path & ssl_key_path
+default['owncloud']['ssl_cert_path'] = nil
+default['owncloud']['ssl_key_path'] = nil
+
 default['owncloud']['ssl_key']['source'] = 'self-signed'
 default['owncloud']['ssl_key']['bag'] = nil
 default['owncloud']['ssl_key']['item'] = nil
