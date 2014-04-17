@@ -56,8 +56,12 @@ end
 
 # SSL certs and port
 if node['owncloud']['ssl']
-  ssl_key_path, ssl_cert_path = generate_certificate
-
+  if node['owncloud']['ssl_key_path'] and node['owncloud']['ssl_cert_path']
+    ssl_key_path = node['owncloud']['ssl_key_path']
+    ssl_cert_path = node['owncloud']['ssl_cert_path']
+  else
+    ssl_key_path, ssl_cert_path = generate_certificate
+  end
   # Create virtualhost for ownCloud
   template File.join(node['nginx']['dir'], 'sites-available', 'owncloud-ssl') do
     source 'nginx_vhost.erb'

@@ -45,8 +45,13 @@ end
 if node['owncloud']['ssl']
   include_recipe 'apache2::mod_ssl'
 
-  ssl_key_path, ssl_cert_path = generate_certificate
-
+  if node['owncloud']['ssl_key_path'] and node['owncloud']['ssl_cert_path']
+    ssl_key_path = node['owncloud']['ssl_key_path']
+    ssl_cert_path = node['owncloud']['ssl_cert_path']
+  else
+    ssl_key_path, ssl_cert_path = generate_certificate
+  end
+  
   # Create SSL virtualhost
   web_app 'owncloud-ssl' do
     template 'apache_vhost.erb'
