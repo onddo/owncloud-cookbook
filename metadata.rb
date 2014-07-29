@@ -25,6 +25,13 @@ suggests 'git'
 
 recipe 'owncloud::default', 'Installs and configures ownCloud'
 
+attribute 'owncloud/service_name',
+  :display_name => 'ownCloud service name',
+  :description => 'Name of file to use for configurations',
+  :type => 'string',
+  :required => 'optional',
+  :default => '"owncloud"'
+
 attribute 'owncloud/version',
   :display_name => 'ownCloud Version',
   :description => 'Version of ownCloud to install',
@@ -110,6 +117,13 @@ attribute 'owncloud/web_server',
   :type => 'string',
   :required => 'optional',
   :default => '"apache"'
+
+attribute 'owncloud/listen_port',
+  :display_name => 'Listen port',
+  :description => 'Port to listen on site/virtual host',
+  :type => 'string',
+  :required => 'optional',
+  :default => '"80"'
 
 attribute 'owncloud/php-fpm/pool',
   :display_name => 'PHP-FPM pool',

@@ -35,6 +35,11 @@ Attributes
     <td>Default</td>
   </tr>
   <tr>
+    <td><code>node['owncloud']['service_name']</code></td>
+    <td>Name of file to use for configurations</td>
+    <td><code>"owncloud"</code></td>
+  </tr>
+  <tr>
     <td><code>node['owncloud']['version']</code></td>
     <td>Version of ownCloud to install</td>
     <td><code>"latest"</code></td>
@@ -93,6 +98,11 @@ Attributes
     <td><code>node['owncloud']['web_server']</code></td>
     <td>Web server to use: <code>"apache"</code> or <code>"nginx"</code></td>
     <td><code>"apache"</code></td>
+  </tr>
+  <tr>
+    <td><code>node['owncloud']['listen_port']</code></td>
+    <td>Port to listen on site/virtual host</td>
+    <td><code>"80"</code></td>
   </tr>
   <tr>
     <td><code>node['owncloud']['php-fpm']['pool']</code></td>
