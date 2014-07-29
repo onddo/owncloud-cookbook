@@ -211,7 +211,8 @@ end
 #==============================================================================
 
 directory node['owncloud']['www_dir'] do
-  owner node['owncloud']['user']; group node[web_server]['group']
+  owner node['owncloud']['user']
+  group node[web_server]['group']
 end
 
 unless node['owncloud']['deploy_from_git']
@@ -235,7 +236,8 @@ unless node['owncloud']['deploy_from_git']
   end
 
   remote_file 'download owncloud' do
-    owner node['owncloud']['user']; group node[web_server]['group']
+    owner node['owncloud']['user']
+    group node[web_server]['group']
     source node['owncloud']['download_url']
     path local_file
     if Gem::Version.new(Chef::VERSION) < Gem::Version.new('11.6.0')
@@ -271,7 +273,8 @@ else
   end
 
   git 'clone owncloud' do
-    user node['owncloud']['user']; group node[web_server]['group']
+    user node['owncloud']['user']
+    group node[web_server]['group']
     destination node['owncloud']['dir']
     repository node['owncloud']['git_repo']
     reference git_ref
@@ -307,7 +310,8 @@ end
   node['owncloud']['data_dir']
 ].each do |dir|
   directory dir do
-    owner node['owncloud']['user']; group node[web_server]['group']
+    owner node['owncloud']['user']
+    group node[web_server]['group']
     mode 00770
     action :create
   end
@@ -315,7 +319,8 @@ end
 
 # create autoconfig.php for the installation
 template 'autoconfig.php' do
-  owner node['owncloud']['user']; group node[web_server]['group']
+  owner node['owncloud']['user']
+  group node[web_server]['group']
   path ::File.join(node['owncloud']['dir'], 'config', 'autoconfig.php')
   source 'autoconfig.php.erb'
   mode 00660

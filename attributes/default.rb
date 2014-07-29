@@ -11,8 +11,8 @@ default['owncloud']['git_ref'] = nil
 web_server = default['owncloud']['web_server'] = 'apache'
 default['owncloud']['listen_port'] =
   case web_server
-  when 'apache' then node[:apache][:listen_ports].first
-  when 'nginx' then node[:nginx][:listen_ports].first
+  when 'apache' then node['apache']['listen_ports'].first
+  when 'nginx' then node['nginx']['listen_ports'].first
   else 80
   end
 
