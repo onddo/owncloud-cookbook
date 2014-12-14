@@ -42,7 +42,7 @@ template File.join(node['nginx']['dir'], 'sites-available', 'owncloud') do
     :server_name => node['owncloud']['server_name'],
     :server_aliases => node['owncloud']['server_aliases'],
     :docroot => node['owncloud']['dir'],
-    :port => 80,
+    :port => node['owncloud']['listen_port'],
     :fastcgi_pass => fastcgi_pass,
     :max_upload_size => node['owncloud']['max_upload_size'],
     :sendfile => node['owncloud']['sendfile']

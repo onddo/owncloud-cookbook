@@ -107,6 +107,25 @@ php_pkgs.each do |pkg|
 end
 
 #==============================================================================
+# Set up user/group
+#==============================================================================
+
+# Get the webserver used
+web_server = node['owncloud']['web_server']
+
+unless system_install = node['owncloud']['user'] == 'www-data'
+  group node['owncloud']['group'] do
+    action :create
+  end
+  user node['owncloud']['user'] do
+    supports :manage_home => true
+    home "/home/#{node['owncloud']['user']}"
+    gid node['owncloud']['group']
+    action :create
+  end
+end
+
+#==============================================================================
 # Set up database
 #==============================================================================
 
@@ -191,7 +210,10 @@ end
 # Download and extract ownCloud
 #==============================================================================
 
-directory node['owncloud']['www_dir']
+directory node['owncloud']['www_dir'] do
+  owner node['owncloud']['user']
+  group node[web_server]['group']
+end
 
 unless node['owncloud']['deploy_from_git']
   basename = ::File.basename(node['owncloud']['download_url'])
@@ -214,6 +236,8 @@ unless node['owncloud']['deploy_from_git']
   end
 
   remote_file 'download owncloud' do
+    owner node['owncloud']['user']
+    group node[web_server]['group']
     source node['owncloud']['download_url']
     path local_file
     if Gem::Version.new(Chef::VERSION) < Gem::Version.new('11.6.0')
@@ -249,6 +273,8 @@ else
   end
 
   git 'clone owncloud' do
+    user node['owncloud']['user']
+    group node[web_server]['group']
     destination node['owncloud']['dir']
     repository node['owncloud']['git_repo']
     reference git_ref
@@ -260,9 +286,6 @@ end
 #==============================================================================
 # Set up webserver
 #==============================================================================
-
-# Get the webserver used
-web_server = node['owncloud']['web_server']
 
 # include the recipe for installing the webserver
 case web_server
@@ -287,20 +310,20 @@ end
   node['owncloud']['data_dir']
 ].each do |dir|
   directory dir do
-    owner node[web_server]['user']
+    owner node['owncloud']['user']
     group node[web_server]['group']
-    mode 00750
+    mode 00770
     action :create
   end
 end
 
 # create autoconfig.php for the installation
 template 'autoconfig.php' do
+  owner node['owncloud']['user']
+  group node[web_server]['group']
   path ::File.join(node['owncloud']['dir'], 'config', 'autoconfig.php')
   source 'autoconfig.php.erb'
-  owner node[web_server]['user']
-  group node[web_server]['group']
-  mode 00640
+  mode 00660
   variables(
     :dbtype => node['owncloud']['config']['dbtype'],
     :dbname => node['owncloud']['config']['dbname'],
@@ -356,8 +379,8 @@ end
 #==============================================================================
 
 if node['owncloud']['cron']['enabled'] == true
-  cron 'owncloud cron' do
-    user node[web_server]['user']
+  cron "#{node['owncloud']['service_name']} cron" do
+    user node['owncloud']['user']
     minute node['owncloud']['cron']['min']
     hour node['owncloud']['cron']['hour']
     day node['owncloud']['cron']['day']
@@ -366,8 +389,9 @@ if node['owncloud']['cron']['enabled'] == true
     command "php -f '#{node['owncloud']['dir']}/cron.php' >> '#{node['owncloud']['data_dir']}/cron.log' 2>&1"
   end
 else
-  cron 'owncloud cron' do
-    user node[web_server]['user']
+  cron "#{node['owncloud']['service_name']} cron" do
+    user node['owncloud']['user']
+    minute node['owncloud']['cron']['min']
     command "php -f '#{node['owncloud']['dir']}/cron.php' >> '#{node['owncloud']['data_dir']}/cron.log' 2>&1"
     action :delete
   end

@@ -35,7 +35,7 @@ web_app 'owncloud' do
   docroot node['owncloud']['dir']
   server_name node['owncloud']['server_name']
   server_aliases node['owncloud']['server_aliases']
-  port '80'
+  port node['owncloud']['listen_port']
   max_upload_size node['owncloud']['max_upload_size']
   sendfile node['owncloud']['sendfile']
   enable true
